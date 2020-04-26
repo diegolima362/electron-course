@@ -1,1 +1,1 @@
-electron course prjects
+electron course projects
