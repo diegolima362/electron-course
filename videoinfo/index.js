@@ -1,7 +1,7 @@
 const electron = require('electron');
 const ffmpeg = require('fluent-ffmpeg');
 
-const {app, BrowserWindow, ipcMain} = electron;
+const { app, BrowserWindow, ipcMain, Menu } = electron;
 
 let mainWindow;
 
@@ -12,6 +12,10 @@ app.on('ready', () => {
         }
     });
     mainWindow.loadURL(`file://${__dirname}/index.html`);
+
+    const mainMenu = Menu.buildFromTemplate(menuTemplate);
+    Menu.setApplicationMenu(mainMenu);
+
 });
 
 ipcMain.on('video:submit', (event, path) => {
@@ -19,3 +23,18 @@ ipcMain.on('video:submit', (event, path) => {
         mainWindow.webContents.send('video:metadata', metadata.format.duration);
     });
 });
+
+const menuTemplate = [{
+    label: 'File',
+    submenu: [{
+        label: 'Quit',
+        accelerator: process.platform === 'darwin' ? 'Command+Q' : 'Ctrl+Q',
+        click() {
+            app.quit();
+        }
+    }, ]
+}];
+
+if (process.platform === 'darwin') {
+    menuTemplate.unshift({});
+}
